@@ -18,10 +18,26 @@
         var retrivedList = JSON.parse(localStorage.getItem("TDL"));
         const field = document.getElementById("dummy");
         if (retrivedList) {
-            for (i = 0; i < retrivedList.length; i++) {
-                tdl.push(retrivedList[i]);
-                field.insertAdjacentHTML('beforeend', `<li>${retrivedList[i].text}</li>`);
-            }
+            retrivedList.map(obj => {
+                tdl.push(obj);
+                field.insertAdjacentHTML('beforeend', `<li id=${obj.Date} onClick="delet(${obj.Date})">${obj.text}</li>`);
+            });
+            // for (i = 0; i < retrivedList.length; i++) {
+            //    tdl.push(retrivedList[i]);
+            //    field.insertAdjacentHTML('beforeend', `<li>${retrivedList[i].text}</li>`);
+            // }
+        }
+
+        function delet (date)
+        {
+            const item = document.getElementById(date);
+            item.remove();
+            tdl=tdl.filter(obj=>{
+                if(obj.Date!==date)
+                    return obj;
+            });
+            console.log(tdl);
+            localStorage.setItem("TDL",JSON.stringify(tdl));
         }
 
         function addTask(text) {
