@@ -7,18 +7,39 @@
 </head>
 
 <body>
-    
+
     <input type="text" name="list" id="aa" />
     <button onclick="work()">Submit</button>
     <p id="dummy">
 
     </p>
     <script>
+        let tdl = [];
+        var retrivedList = JSON.parse(localStorage.getItem("TDL"));
+        const field = document.getElementById("dummy");
+        if (retrivedList) {
+            for (i = 0; i < retrivedList.length; i++) {
+                tdl.push(retrivedList[i]);
+                field.insertAdjacentHTML('beforeend', `<li>${retrivedList[i].text}</li>`);
+            }
+        }
+
+        function addTask(text) {
+            const todo = {
+                text,
+                checked: false,
+                Date: Date.now()
+            };
+            tdl.push(todo);
+            localStorage.setItem("TDL", JSON.stringify(tdl));
+            field.insertAdjacentHTML('beforeend', `<li>${text}</li>`);
+        }
+
         function work() {
             const w = document.getElementById('aa').value;
             document.getElementById("aa").value = "";
-            const field=document.getElementById("dummy");
-            field.insertAdjacentHTML('beforeend',`${w}`);
+            addTask(w);
+
         }
     </script>
 </body>
