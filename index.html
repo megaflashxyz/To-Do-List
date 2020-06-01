@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    <title>
+        TDA
+    </title>
+</head>
+
+<body>
+    
+    <input type="text" name="list" id="aa" />
+    <button onclick="work()">Submit</button>
+    <p id="dummy">
+
+    </p>
+    <script>
+        function work() {
+            const w = document.getElementById('aa').value;
+            document.getElementById("aa").value = "";
+            const field=document.getElementById("dummy");
+            field.insertAdjacentHTML('beforeend',`${w}`);
+        }
+    </script>
+</body>
+
+
+</html>
