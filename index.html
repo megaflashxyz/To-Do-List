@@ -20,7 +20,8 @@
         if (retrivedList) {
             retrivedList.map(obj => {
                 tdl.push(obj);
-                field.insertAdjacentHTML('beforeend', `<li id=${obj.Date} onClick="delet(${obj.Date})">${obj.text}</li>`);
+                console.log(obj);
+                field.insertAdjacentHTML('beforeend', `<li id="${obj.Date}" onClick="delet(${obj.Date})">${obj.text}</li>`);
             });
             // for (i = 0; i < retrivedList.length; i++) {
             //    tdl.push(retrivedList[i]);
@@ -28,16 +29,18 @@
             // }
         }
 
-        function delet (date)
-        {
+
+
+        function delet(date) {
+            console.log("clicked");
             const item = document.getElementById(date);
             item.remove();
-            tdl=tdl.filter(obj=>{
-                if(obj.Date!==date)
+            tdl = tdl.filter(obj => {
+                if (obj.Date !== date)
                     return obj;
             });
             console.log(tdl);
-            localStorage.setItem("TDL",JSON.stringify(tdl));
+            localStorage.setItem("TDL", JSON.stringify(tdl))
         }
 
         function addTask(text) {
@@ -48,7 +51,7 @@
             };
             tdl.push(todo);
             localStorage.setItem("TDL", JSON.stringify(tdl));
-            field.insertAdjacentHTML('beforeend', `<li>${text}</li>`);
+            field.insertAdjacentHTML('beforeend', `<li id="${todo.Date}" onClick="delet(${todo.Date})">${text}</li>`);
         }
 
         function work() {
