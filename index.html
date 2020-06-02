@@ -32,6 +32,14 @@
             padding: 40px 0;
         }
 
+        .contentflex {
+
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
         .content {
             border-radius: 5px;
             margin: 0 auto;
@@ -42,23 +50,34 @@
         }
 
         .content li {
-            background-repeat: no-repeat;
-            background-size: 75px;
-            background-color: #fff;
-            box-shadow: 0 17px 19px #0000000b;
-            border-radius: 14px;
-            opacity: 1;
-            padding: 10px 20px;
-            width: 95%;
-            background-position: 20px;
-            border: 1px solid #7272720b;
+
+            margin-left: 15px;
+            margin-bottom: 20px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
         }
 
-        button {
+        .delete-todo {
+            border: none;
+            background-color: transparent;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .delete-todo svg {
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+        }
+
+        .button {
             border: none;
             border-radius: 3px;
             color: white;
-            padding: 10px 20px;
+            padding: 13px 20px;
             margin: 0 auto;
             background: #7289da;
 
@@ -73,7 +92,7 @@
 
         input[type=text],
         select {
-            width: 70%;
+            width: 100%;
             padding: 12px 20px;
             margin: 0 10px;
             display: inline-block;
@@ -87,10 +106,10 @@
 <body background="#f9f9f">
     <h1 class="header">Hello User</h1>
     <div class="content">
-        <div style="display: inline;">
-        <input color="#5D58F7" type="text" name="list" id="aa" placeholder="type your task here" />
-        <button color="#5D58F7" onclick="work()">Add</button>
-    </div>
+        <div class="contentflex">
+            <input color="#5D58F7" type="text" name="list" id="aa" placeholder="type your task here" />
+            <button class="button" color="#5D58F7" onclick="work()">Add</button>
+        </div>
         <p id="dummy">
 
         </p>
@@ -102,7 +121,13 @@
         if (retrivedList) {
             retrivedList.map(obj => {
                 tdl.push(obj);
-                field.insertAdjacentHTML('beforeend', `<li id="${obj.Date}" onClick="delet(${obj.Date})">${obj.text}</li>`);
+                field.insertAdjacentHTML('beforeend', `<li id="${obj.Date}" >
+            <span>${obj.text}</span>
+            <button class="delete-todo" onClick="delet(${obj.Date})">
+                <svg style="margin-right:10px" id="delete-icon" viewBox="0 0 448 448" fill="#D80027">
+                <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
+            </button>
+            </li>`);
             });
             // for (i = 0; i < retrivedList.length; i++) {
             //    tdl.push(retrivedList[i]);
@@ -131,11 +156,18 @@
                 checked: false,
                 Date: Date.now()
             };
-            
+
             console.log(text);
             tdl.push(todo);
             localStorage.setItem("TDL", JSON.stringify(tdl));
-            field.insertAdjacentHTML('beforeend', `<li id="${todo.Date}" onClick="delet(${todo.Date})">${text}</li>`);
+            field.insertAdjacentHTML('beforeend', `<li id="${todo.Date}" >
+            <span>${text}</span>
+            <button class="delete-todo" onClick="delet(${todo.Date})">
+                <svg id="delete-icon" viewBox="0 0 448 448" fill="#D80027">
+                <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
+            </button>
+            </li>`);
+
         }
 
         function work() {
