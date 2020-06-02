@@ -4,15 +4,97 @@
     <title>
         TDA
     </title>
+    <style>
+        @import url('https://rsms.me/inter/inter.css');
+
+        html {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+        }
+
+        @supports (font-variation-settings: normal) {
+            html {
+                font-family: 'Inter var', sans-serif;
+            }
+        }
+
+        div {
+            display: block;
+        }
+
+        .header {
+            color: #4f545c;
+            margin: 0 auto;
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .content {
+            border-radius: 5px;
+            margin: 0 auto;
+            max-width: 640px;
+            overflow: hidden;
+            background: #fff;
+            padding: 40px 50px;
+        }
+
+        .content li {
+            background-repeat: no-repeat;
+            background-size: 75px;
+            background-color: #fff;
+            box-shadow: 0 17px 19px #0000000b;
+            border-radius: 14px;
+            opacity: 1;
+            padding: 10px 20px;
+            width: 95%;
+            background-position: 20px;
+            border: 1px solid #7272720b;
+        }
+
+        button {
+            border: none;
+            border-radius: 3px;
+            color: white;
+            padding: 10px 20px;
+            margin: 0 auto;
+            background: #7289da;
+
+            text-decoration: none;
+            line-height: 100%;
+            color: white;
+            font-size: 15px;
+            font-weight: normal;
+            text-transform: none;
+            margin: 0;
+        }
+
+        input[type=text],
+        select {
+            width: 70%;
+            padding: 12px 20px;
+            margin: 0 10px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+    </style>
 </head>
 
-<body>
+<body background="#f9f9f">
+    <h1 class="header">Hello User</h1>
+    <div class="content">
+        <div style="display: inline;">
+        <input color="#5D58F7" type="text" name="list" id="aa" placeholder="type your task here" />
+        <button color="#5D58F7" onclick="work()">Add</button>
+    </div>
+        <p id="dummy">
 
-    <input type="text" name="list" id="aa" />
-    <button onclick="work()">Submit</button>
-    <p id="dummy">
-
-    </p>
+        </p>
+    </div>
     <script>
         let tdl = [];
         var retrivedList = JSON.parse(localStorage.getItem("TDL"));
@@ -20,7 +102,6 @@
         if (retrivedList) {
             retrivedList.map(obj => {
                 tdl.push(obj);
-                console.log(obj);
                 field.insertAdjacentHTML('beforeend', `<li id="${obj.Date}" onClick="delet(${obj.Date})">${obj.text}</li>`);
             });
             // for (i = 0; i < retrivedList.length; i++) {
@@ -44,11 +125,14 @@
         }
 
         function addTask(text) {
+            text = String(text).replace(/&/g, '&amp').replace(/</g, '&lt').replace(/>/g, '&gt').replace(/"/g, '&quot');
             const todo = {
                 text,
                 checked: false,
                 Date: Date.now()
             };
+            
+            console.log(text);
             tdl.push(todo);
             localStorage.setItem("TDL", JSON.stringify(tdl));
             field.insertAdjacentHTML('beforeend', `<li id="${todo.Date}" onClick="delet(${todo.Date})">${text}</li>`);
