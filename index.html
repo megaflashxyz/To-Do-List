@@ -1,6 +1,9 @@
 <html>
 
 <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Praveen Kumar G">
+    <meta name="description" content="To do list app to add your daily task">
     <title>
         TDA
     </title>
@@ -46,7 +49,7 @@
             max-width: 640px;
             overflow: hidden;
             background: #fff;
-            padding: 40px 50px;
+            padding: 40px 0;
         }
 
         .content li {
@@ -87,7 +90,12 @@
             font-size: 15px;
             font-weight: normal;
             text-transform: none;
-            margin: 0;
+
+        }
+
+        button:focus {
+            outline: none !important;
+            border-color: #719ECE;
         }
 
         input[type=text],
@@ -96,10 +104,24 @@
             padding: 12px 20px;
             margin: 0 10px;
             display: inline-block;
-            border: 1px solid #ccc;
+            border: 1px solid #7289da;
             border-radius: 4px;
             box-sizing: border-box;
         }
+
+        input:focus {
+            outline: none !important;
+            border-color: #7289da;
+            border: 1.25px solid #7289da;
+            
+        }
+
+        svg{
+            margin-right:20px;
+            height: 2px;
+            width: 20px;
+        }
+
     </style>
 </head>
 
@@ -107,7 +129,7 @@
     <h1 class="header">Hello User</h1>
     <div class="content">
         <div class="contentflex">
-            <input color="#5D58F7" type="text" name="list" id="aa" placeholder="type your task here" />
+            <input autofocus color="#5D58F7" type="text" name="list" id="aa" placeholder="Enter your task here...." />
             <button class="button" color="#5D58F7" onclick="work()">Add</button>
         </div>
         <p id="dummy">
@@ -124,15 +146,11 @@
                 field.insertAdjacentHTML('beforeend', `<li id="${obj.Date}" >
             <span>${obj.text}</span>
             <button class="delete-todo" onClick="delet(${obj.Date})">
-                <svg style="margin-right:10px" id="delete-icon" viewBox="0 0 448 448" fill="#D80027">
+                <svg  id="delete-icon" width="54px" height="54px" viewBox="0 0 600 600" fill="#D80027">
                 <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
             </button>
             </li>`);
             });
-            // for (i = 0; i < retrivedList.length; i++) {
-            //    tdl.push(retrivedList[i]);
-            //    field.insertAdjacentHTML('beforeend', `<li>${retrivedList[i].text}</li>`);
-            // }
         }
 
 
@@ -163,7 +181,7 @@
             field.insertAdjacentHTML('beforeend', `<li id="${todo.Date}" >
             <span>${text}</span>
             <button class="delete-todo" onClick="delet(${todo.Date})">
-                <svg id="delete-icon" viewBox="0 0 448 448" fill="#D80027">
+                <svg id="delete-icon" style="margin-right:10px" viewBox="0 0 600 600" fill="#D80027">
                 <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
             </button>
             </li>`);
@@ -172,12 +190,16 @@
 
         function work() {
             const w = document.getElementById('aa').value;
+            if (w === '') {
+                alert("Enter some task");
+            }
+            else {
+                addTask(w);
+            }
             document.getElementById("aa").value = "";
-            addTask(w);
 
         }
     </script>
 </body>
-
 
 </html>
