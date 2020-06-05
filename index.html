@@ -150,7 +150,7 @@
         if (retrivedList) {
             retrivedList.map(obj => {
                 tdl.push(obj);
-                field.insertAdjacentHTML('beforeend', `<li class="card column" draggable="true" id="${obj.Date}" >
+                field.insertAdjacentHTML('beforeend', `<li class="card" index="${obj.index}" draggable="true" id="${obj.Date}" >
             <span>${obj.text}</span>
             <button class="delete-todo" index ="1" onClick="delet(${obj.Date})">
                 <svg  id="delete-icon" width="54px" height="54px" viewBox="0 0 600 600" fill="#D80027">
@@ -163,14 +163,24 @@
 
 
         function delet(date) {
-            console.log("clicked");
+            
             const item = document.getElementById(date);
+            const itemIndex = item.getAttribute("index");
             item.remove();
             tdl = tdl.filter(obj => {
                 if (obj.Date !== date)
+                {
+                    if(itemIndex<obj.index)
+                    {
+                        obj.index=obj.index-1;
+                        var temIndex = document.getElementById(obj.Date).getAttribute("index");
+                        document.getElementById(obj.Date).setAttribute('index',temIndex-1);
+                    }
+
                     return obj;
+                }
             });
-            console.log(tdl);
+            
             localStorage.setItem("TDL", JSON.stringify(tdl))
         }
 
@@ -178,14 +188,14 @@
             text = String(text).replace(/&/g, '&amp').replace(/</g, '&lt').replace(/>/g, '&gt').replace(/"/g, '&quot');
             const todo = {
                 text,
-                index: tdl.length + 1,
+                index: tdl.length,
                 Date: Date.now()
             };
 
-            console.log(text);
+
             tdl.push(todo);
             localStorage.setItem("TDL", JSON.stringify(tdl));
-            field.insertAdjacentHTML('beforeend', `<li class="card column" draggable="true" id="${todo.Date}" >
+            field.insertAdjacentHTML('beforeend', `<li class="card" index="${todo.index}" draggable="true" id="${todo.Date}" >
             <span>${text}</span>
             <button class="delete-todo" onClick="delet(${todo.Date})">
                 <svg id="delete-icon" viewBox="0 0 600 600" fill="#D80027">
@@ -193,8 +203,7 @@
             </button>
             </li>`);
             var o = document.getElementById(todo.Date);
-            console.log(o);
-            addDnDHandlers(o);
+            addDnDeventListener(o);
 
         }
 
@@ -205,91 +214,53 @@
             }
             else {
                 addTask(w);
+                document.getElementById("aa").value = "";
             }
-            document.getElementById("aa").value = "";
+
+            
 
         }
 
 
 
-        var dragSrcEl = null;
+        var dragsrc = null;
 
-        function handleDragStart(e) {
-            // Target (this) element is the source node.
-            dragSrcEl = this;
-
+        function handleStart(e) {
+            dragsrc = this;
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/html', this.outerHTML);
-
-            this.classList.add('dragElem');
         }
-        function handleDragOver(e) {
+
+        function handleOver(e) {
             if (e.preventDefault) {
-                e.preventDefault(); // Necessary. Allows us to drop.
+                e.preventDefault();
             }
-            this.classList.add('over');
-
-            e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
+            e.dataTransfer.dropEffect = 'move';
             return false;
-        }
-
-        function handleDragEnter(e) {
-            // this / e.target is the current hover target.
-        }
-
-        function handleDragLeave(e) {
-            this.classList.remove('over');  // this / e.target is previous target element.
         }
 
         function handleDrop(e) {
-            // this/e.target is current target element.
-
             if (e.stopPropagation) {
-                e.stopPropagation(); // Stops some browsers from redirecting.
+                e.stopPropagation();
             }
-
-            // Don't do anything if dropping the same column we're dragging.
-            if (dragSrcEl != this) {
-                // Set the source column's HTML to the HTML of the column we dropped on.
-                //alert(this.outerHTML);
-                //dragSrcEl.innerHTML = this.innerHTML;
-                //this.innerHTML = e.dataTransfer.getData('text/html');
-
-                this.parentNode.removeChild(dragSrcEl);
-                var dropHTML = e.dataTransfer.getData('text/html');
-                this.insertAdjacentHTML('beforebegin', dropHTML);
-                var dropElem = this.previousSibling;
-                console.log(this.previousSibling);
-                addDnDHandlers(dropElem);
-
+            if (dragsrc != this) { 
+                this.parentNode.removeChild(dragsrc);
+                var srchtml = e.dataTransfer.getData("text/html");
+                this.insertAdjacentHTML('beforebegin',srchtml);
+                var newhtmlEle = this.previousSibling;
+                addDnDeventListener(newhtmlEle);
             }
-            this.classList.remove('over');
-            return false;
         }
 
-        function handleDragEnd(e) {
-            // this/e.target is the source node.
-            this.classList.remove('over');
 
-            /*[].forEach.call(cols, function (col) {
-              col.classList.remove('over');
-            });*/
+        function addDnDeventListener(card) {
+            card.addEventListener('dragstart', handleStart, false);
+            card.addEventListener('dragover', handleOver, false);
+            card.addEventListener('drop', handleDrop, false);
         }
 
-        function addDnDHandlers(elem) {
-            elem.addEventListener('dragstart', handleDragStart, false);
-            elem.addEventListener('dragenter', handleDragEnter, false)
-            elem.addEventListener('dragover', handleDragOver, false);
-            elem.addEventListener('dragleave', handleDragLeave, false);
-            elem.addEventListener('drop', handleDrop, false);
-            elem.addEventListener('dragend', handleDragEnd, false);
-
-        }
-
-        var cols = document.querySelectorAll('.column');
-        [].forEach.call(cols, addDnDHandlers);
-
+        var cards = document.querySelectorAll(".card");
+        [].forEach.call(cards, addDnDeventListener);
 
     </script>
 </body>
