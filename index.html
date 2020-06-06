@@ -227,7 +227,6 @@
 
         function handleStart(e) {
             dragsrc = this;
-            console.log("start");
             oldindex = document.getElementById(e.target.id).getAttribute("index");
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/html', this.outerHTML);
@@ -252,8 +251,6 @@
                 this.insertAdjacentHTML('beforebegin', srchtml);
                 var newhtmlEle = this.previousSibling;
                 addDnDeventListener(newhtmlEle);
-                console.log(oldindex);
-                console.log(newindex);
                 changeindex(newhtmlEle);
             }
         }
@@ -285,14 +282,14 @@
 
                         if (newhtmlEle.getAttribute("id") == task.Date) {
                             task.index = newindex+1;
-                            console.log(task.index);
+                            
                             document.getElementById(task.Date).setAttribute('index', task.index);
                         }
                         else {
                             if (task.index >= newindex && task.index <= oldindex) {
                                 var tempindex = document.getElementById(task.Date).getAttribute("index");
                                 task.index = parseInt(tempindex)+parseInt(1);
-                                console.log(task.index);
+                               
                                 document.getElementById(task.Date).setAttribute('index', task.index);
                             }
                         }
