@@ -163,24 +163,22 @@
 
 
         function delet(date) {
-            
+
             const item = document.getElementById(date);
             const itemIndex = item.getAttribute("index");
             item.remove();
             tdl = tdl.filter(obj => {
-                if (obj.Date !== date)
-                {
-                    if(itemIndex<obj.index)
-                    {
-                        obj.index=obj.index-1;
+                if (obj.Date !== date) {
+                    if (itemIndex < obj.index) {
+                        obj.index = obj.index - 1;
                         var temIndex = document.getElementById(obj.Date).getAttribute("index");
-                        document.getElementById(obj.Date).setAttribute('index',temIndex-1);
+                        document.getElementById(obj.Date).setAttribute('index', temIndex - 1);
                     }
 
                     return obj;
                 }
             });
-            
+
             localStorage.setItem("TDL", JSON.stringify(tdl))
         }
 
@@ -217,16 +215,20 @@
                 document.getElementById("aa").value = "";
             }
 
-            
+
 
         }
 
 
 
         var dragsrc = null;
+        var oldindex;
+        var newindex;
 
         function handleStart(e) {
             dragsrc = this;
+            console.log("start");
+            oldindex = document.getElementById(e.target.id).getAttribute("index");
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/html', this.outerHTML);
         }
@@ -243,20 +245,76 @@
             if (e.stopPropagation) {
                 e.stopPropagation();
             }
-            if (dragsrc != this) { 
+            if (dragsrc != this) {
+                newindex = document.getElementById(e.target.id).getAttribute("index") - 1;
                 this.parentNode.removeChild(dragsrc);
                 var srchtml = e.dataTransfer.getData("text/html");
-                this.insertAdjacentHTML('beforebegin',srchtml);
+                this.insertAdjacentHTML('beforebegin', srchtml);
                 var newhtmlEle = this.previousSibling;
                 addDnDeventListener(newhtmlEle);
+                console.log(oldindex);
+                console.log(newindex);
+                changeindex(newhtmlEle);
             }
         }
+
+        function changeindex(newhtmlEle) {
+            if (newindex > oldindex) {
+                tdl = tdl.filter(task => {
+
+                    if (newhtmlEle.getAttribute("id") == task.Date) {
+                        task.index = newindex;
+                        document.getElementById(task.Date).setAttribute('index', newindex);
+                    }
+                    else {
+                        if (task.index <= newindex && task.index >= oldindex) {
+                            var tempindex = document.getElementById(task.Date).getAttribute("index");
+                            task.index = tempindex - 1;
+                            document.getElementById(task.Date).setAttribute('index', tempindex - 1);
+                        }
+                    }
+                    return task;
+                });
+                
+                oldindex = null;
+                newindex = null;
+            }
+            else {
+                if (newindex < oldindex) {
+                    tdl = tdl.filter(task => {
+
+                        if (newhtmlEle.getAttribute("id") == task.Date) {
+                            task.index = newindex+1;
+                            console.log(task.index);
+                            document.getElementById(task.Date).setAttribute('index', task.index);
+                        }
+                        else {
+                            if (task.index >= newindex && task.index <= oldindex) {
+                                var tempindex = document.getElementById(task.Date).getAttribute("index");
+                                task.index = parseInt(tempindex)+parseInt(1);
+                                console.log(task.index);
+                                document.getElementById(task.Date).setAttribute('index', task.index);
+                            }
+                        }
+                        return task;
+                    });
+                    oldindex = null;
+                    newindex = null;
+                    
+                }
+            }
+            tdl.sort((a,b)=>a.index-b.index);
+            localStorage.setItem("TDL",JSON.stringify(tdl));
+        }
+
 
 
         function addDnDeventListener(card) {
             card.addEventListener('dragstart', handleStart, false);
             card.addEventListener('dragover', handleOver, false);
             card.addEventListener('drop', handleDrop, false);
+
+
         }
 
         var cards = document.querySelectorAll(".card");
