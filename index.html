@@ -63,6 +63,12 @@
 
         }
 
+        .spanclass {
+            flex-grow: 1;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
         .delete-todo {
             border: none;
             background-color: transparent;
@@ -117,6 +123,10 @@
 
         }
 
+        .checked {
+            text-decoration: line-through;
+        }
+
         svg {
             margin-right: 20px;
             height: 2px;
@@ -152,13 +162,45 @@
             retrivedList.map(obj => {
                 tdl.push(obj);
                 field.insertAdjacentHTML('beforeend', `<li class="card" index="${obj.index}" draggable="true" id="${obj.Date}" >
-            <span>${obj.text}</span>
+                <input  type="checkbox" id="${obj.Date}a" onClick="toggle(${obj.Date},true)"  ${obj.checked ? 'checked' : ''}   >
+            <span id="${obj.Date}b" class="spanclass">${obj.text}</span>
             <button class="delete-todo" index ="1" onClick="delet(${obj.Date})">
                 <svg  id="delete-icon" width="54px" height="54px" viewBox="0 0 600 600" fill="#D80027">
                 <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
             </button>
             </li>`);
+                toggle(obj.Date, false);
             });
+        }
+
+        function toggle(date, inital) {
+            var chec = document.getElementById(date + "a");
+            var doc = document.getElementById(date + "b");
+            if (chec.checked) {
+                doc.classList.add("checked");
+            }
+            else {
+                doc.classList.remove("checked");
+            }
+
+            if (inital) {
+                console.log("true");
+                tdl = tdl.filter(obj => {
+                    if (obj.Date === date) {
+                        if(chec.checked)
+                        {
+                            obj.checked=true;
+                        }
+                        else
+                        {
+                            obj.checked=false;
+                        }
+                    }
+                    return obj;
+                });
+            }
+           // console.log(tdl);
+            localStorage.setItem("TDL", JSON.stringify(tdl));
         }
 
 
@@ -188,6 +230,7 @@
             const todo = {
                 text,
                 index: tdl.length,
+                checked: false,
                 Date: Date.now()
             };
 
@@ -195,9 +238,10 @@
             tdl.push(todo);
             localStorage.setItem("TDL", JSON.stringify(tdl));
             field.insertAdjacentHTML('beforeend', `<li class="card" index="${todo.index}" draggable="true" id="${todo.Date}" >
-            <span>${text}</span>
-            <button class="delete-todo" onClick="delet(${todo.Date})">
-                <svg id="delete-icon" viewBox="0 0 600 600" fill="#D80027">
+                <input  type="checkbox" id="${todo.Date}a" onClick="toggle(${todo.Date},true)" >
+            <span id="${todo.Date}b" class="spanclass">${todo.text}</span>
+            <button class="delete-todo" index ="1" onClick="delet(${todo.Date})">
+                <svg  id="delete-icon" width="54px" height="54px" viewBox="0 0 600 600" fill="#D80027">
                 <path d="m224 0c-123.710938 0-224 100.289062-224 224s100.289062 224 224 224 224-100.289062 224-224c-.132812-123.65625-100.34375-223.867188-224-224zm124.449219 325.824219c4.15625 4.015625 5.828125 9.964843 4.363281 15.558593s-5.835938 9.964844-11.429688 11.429688-11.542968-.207031-15.558593-4.363281l-101.824219-101.824219-101.824219 101.824219c-6.277343 6.0625-16.257812 5.976562-22.429687-.195313s-6.257813-16.152344-.195313-22.429687l101.824219-101.824219-101.824219-101.824219c-4.15625-4.015625-5.828125-9.964843-4.363281-15.558593s5.835938-9.964844 11.429688-11.429688 11.542968.207031 15.558593 4.363281l101.824219 101.824219 101.824219-101.824219c6.277343-6.0625 16.257812-5.976562 22.429687.195313s6.257813 16.152344.195313 22.429687l-101.824219 101.824219zm0 0" /></svg>
             </button>
             </li>`);
@@ -257,6 +301,7 @@
         }
 
         function changeindex(newhtmlEle) {
+            console.log("worked");
             if (newindex > oldindex) {
                 tdl = tdl.filter(task => {
 
@@ -273,7 +318,7 @@
                     }
                     return task;
                 });
-                
+
                 oldindex = null;
                 newindex = null;
             }
@@ -282,15 +327,15 @@
                     tdl = tdl.filter(task => {
 
                         if (newhtmlEle.getAttribute("id") == task.Date) {
-                            task.index = newindex+1;
-                            
+                            task.index = newindex + 1;
+
                             document.getElementById(task.Date).setAttribute('index', task.index);
                         }
                         else {
                             if (task.index >= newindex && task.index <= oldindex) {
                                 var tempindex = document.getElementById(task.Date).getAttribute("index");
-                                task.index = parseInt(tempindex)+parseInt(1);
-                               
+                                task.index = parseInt(tempindex) + parseInt(1);
+
                                 document.getElementById(task.Date).setAttribute('index', task.index);
                             }
                         }
@@ -298,11 +343,11 @@
                     });
                     oldindex = null;
                     newindex = null;
-                    
+
                 }
             }
-            tdl.sort((a,b)=>a.index-b.index);
-            localStorage.setItem("TDL",JSON.stringify(tdl));
+            tdl.sort((a, b) => a.index - b.index);
+            localStorage.setItem("TDL", JSON.stringify(tdl));
         }
 
 
